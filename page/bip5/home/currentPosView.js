@@ -1,4 +1,4 @@
-import { setStatusBarVisible, createWidget, widget, align, text_style } from "@zos/ui";
+import { setStatusBarVisible, createWidget, widget, align, text_style, redraw, prop } from "@zos/ui";
 import * as s from "./common.style";
 
 export class CurrentPosView {
@@ -6,28 +6,29 @@ export class CurrentPosView {
         this.state = state;
     }
 
-    currentLonStr() {
+    currentLonText() {
         if (this.state.currentPos)
             return this.state.currentPos.lon;
         else return "..."
     }
 
-    currentLatStr() {
+    currentLatText() {
         if (this.state.currentPos)
             return this.state.currentPos.lat;
         else return "..."
     }
 
-    currentAltStr() {
+    currentAltText() {
         if (this.state.currentPos) {
             return this.state.currentPos.alt + "m";
         } else return "..."
     }
 
-    lastUpdatedStr() {
-        if (this.state.lastUpdatedMs) {
-            return Math.floor(Date.now() - this.state.lastUpdatedMs / 1000) + "s ago";
-        } else return "..."
+    lastUpdatedText() {
+        const label = "Updated: ";
+        if (this.state.currentPos && this.state.currentPos.lastUpdatedMs) {
+            return label + Math.floor((Date.now() - this.state.currentPos.lastUpdatedMs) / 1000) + "s ago";
+        } else return label + "..."
     }
 
     build(defaultOptions) {
@@ -42,29 +43,34 @@ export class CurrentPosView {
             yPos => createWidget(widget.TEXT, {
                 ...defaultOptions,
                 ...s.COMMON_TEXT_STYLE,
-                text: "Lon: " + this.currentLonStr(),
+                text: "Lon: " + this.currentLonText(),
                 y: yPos
                 }),
             yPos => createWidget(widget.TEXT, {
                 ...defaultOptions,
                 ...s.COMMON_TEXT_STYLE,
-                text: "Lat: " + this.currentLatStr(),
+                text: "Lat: " + this.currentLatText(),
                 y: yPos
             }),
             yPos => createWidget(widget.TEXT, {
                 ...defaultOptions,
                 ...s.COMMON_TEXT_STYLE,
-                text: "Alt: " + this.currentAltStr(),
+                text: "Alt: " + this.currentAltText(),
                 y: yPos
             }),
-            yPos => createWidget(widget.TEXT, {
+            yPos => this.lastUpdatedTextWidget = createWidget(widget.TEXT, {
                 ...defaultOptions,
                 ...s.COMMON_TEXT_STYLE,
-                text: "Updated: " + this.lastUpdatedStr(),
+                text: this.lastUpdatedText(),
                 y: yPos
             }),
 
         ].forEach((f, i) => f(i * s.TEXT_H))
     }
+
+    refresh() {
+        //s.logger.debug("State during refresh: " + JSON.stringify(this.state))
+        this.lastUpdatedTextWidget.setProperty(prop.TEXT, this.lastUpdatedText());
+   }
 
 }

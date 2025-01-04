@@ -3,7 +3,7 @@ import { log } from "@zos/utils";
 import { getDeviceInfo } from "@zos/device";
 import { createWidget, widget, align, prop, text_style, event, getTextLayout } from '@zos/ui'
 
-const logger = log.getLogger("positioner");
+export const logger = log.getLogger("positioner");
 
 export const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = getDeviceInfo();
 

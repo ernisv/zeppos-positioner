@@ -1,4 +1,4 @@
-import { setStatusBarVisible, createWidget, widget, align, text_style } from "@zos/ui";
+import { setStatusBarVisible, createWidget, widget, align, text_style, prop } from "@zos/ui";
 import * as s from "./common.style";
 
 export class SavedPosView {
@@ -6,10 +6,11 @@ export class SavedPosView {
         this.state = state;
     }
 
-    lastUpdatedStr() {
-        if (this.state.lastUpdatedMs) {
-            return Math.floor(Date.now() - this.state.lastUpdatedMs / 1000) + "s ago";
-        } else return "..."
+    lastUpdatedText() {
+        const label = "Updated: ";
+        if (this.state.currentPos && this.state.currentPos.lastUpdatedMs) {
+            return label + Math.floor((Date.now() - this.state.currentPos.lastUpdatedMs) / 1000) + "s ago";
+        } else return label + "..."
     }
 
     build(defaultOptions) {
@@ -27,14 +28,19 @@ export class SavedPosView {
                 text: "TODO",
                 y: yPos
                 }),
-            yPos => createWidget(widget.TEXT, {
+            yPos => this.lastUpdatedTextWidget = createWidget(widget.TEXT, {
                 ...defaultOptions,
                 ...s.COMMON_TEXT_STYLE,
-                text: "Updated: " + this.lastUpdatedStr(),
+                text: this.lastUpdatedText(),
                 y: yPos
             }),
 
         ].forEach((f, i) => f(i * s.TEXT_H))
     }
+
+    refresh() {
+        //s.logger.debug("State during refresh: " + JSON.stringify(this.state))
+        this.lastUpdatedTextWidget.setProperty(prop.TEXT, this.lastUpdatedText());
+   }
 
 }
