@@ -5,6 +5,7 @@ import * as s from "./common.style";
 import { CurrentPosView } from "./currentPosView"
 import { SavedPosView } from "./savedPosView"
 import { GeolocationModule } from "./../../../utils/geolocationModule"
+import { LocalStore } from "./../../../utils/localStore"
 import { setPageBrightTime } from '@zos/display'
 
 Page({
@@ -56,11 +57,14 @@ Page({
   onInit() {
     s.logger.debug("page onInit invoked");
 
-    this.currentPosView = new CurrentPosView(this.state);
-    this.savedPosView = new SavedPosView(this.state);
+    const localStore = new LocalStore();
 
     this.geoModule = new GeolocationModule();
     this.geoModule.start();
+
+    this.currentPosView = new CurrentPosView(this.state);
+    this.savedPosView = new SavedPosView(this.state, localStore);
+
   },
 
   onDestroy() {

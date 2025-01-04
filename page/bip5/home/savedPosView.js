@@ -1,9 +1,21 @@
 import { setStatusBarVisible, createWidget, widget, align, text_style, prop } from "@zos/ui";
 import * as s from "./common.style";
+import { LocalStore } from "./../../../utils/localStore"
 
 export class SavedPosView {
-    constructor(state) {
+    constructor(state, localStore) {
         this.state = state;
+        this.localStore = localStore
+    
+        try {
+            const loadedState = localStore.loadObject();
+
+            if (loadedState !== undefined && loadedState.savedPos) {
+                this.state.savedPos = loadedState.savedPos;
+            }    
+        } catch (error) {
+            s.logger.error("Error reading stored state: " + error)
+        }
     }
 
     _lastUpdatedText() {
@@ -103,12 +115,17 @@ export class SavedPosView {
                 lat: curPos.lat,
                 lon: curPos.lon
             }
+            this.localStore.storeObject({
+                savedPos: this.state.savedPos
+            })
         }
         this.refresh();
     }
 
     clearPosition() {
         this.state.savedPos = null;
+        this.localStore.storeObject({
+        })        
         this.refresh();
     }    
 
