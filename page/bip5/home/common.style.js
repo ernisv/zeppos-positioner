@@ -23,3 +23,13 @@ export const COMMON_TEXT_STYLE = {
   align_v: align.CENTER_V,
   text_style: text_style.NONE,
 };
+
+export const COMMON_BUTTON_STYLE = {
+  h: TEXT_H,
+  w: DEVICE_WIDTH / 2,
+  color: 0xffffff,
+  text_size: textSize,
+  align_h: align.CENTER_H,
+  align_v: align.CENTER_V,
+  text_style: text_style.NONE,
+};

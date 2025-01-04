@@ -9,7 +9,8 @@ import { setPageBrightTime } from '@zos/display'
 
 Page({
   state: {
-    currentPos: null
+    currentPos: null,
+    savedPos: null
   },
 
   build() {
