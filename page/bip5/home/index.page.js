@@ -5,7 +5,7 @@ import * as s from "./common.style";
 import { CurrentPosView } from "./currentPosView"
 import { SavedPosView } from "./savedPosView"
 import { GeolocationModule } from "./../../../utils/geolocationModule"
-
+import { setPageBrightTime } from '@zos/display'
 
 Page({
   state: {
@@ -15,6 +15,9 @@ Page({
   build() {
     s.logger.debug("page build invoked");
     setStatusBarVisible(false);
+    setPageBrightTime({
+      brightTime: 90000,
+    });
 
     this.geoModule.listeners.push(this.geoListener.bind(this));
 
