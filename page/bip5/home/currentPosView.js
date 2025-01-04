@@ -7,21 +7,24 @@ export class CurrentPosView {
     }
 
     currentLonText() {
+        const label = "Lon: "
         if (this.state.currentPos)
-            return this.state.currentPos.lon;
-        else return "..."
+            return label + this.state.currentPos.lon;
+        else return label + "..."
     }
 
     currentLatText() {
+        const label = "Lat: "
         if (this.state.currentPos)
-            return this.state.currentPos.lat;
-        else return "..."
+            return label + this.state.currentPos.lat;
+        else return label + "..."
     }
 
-    currentAltText() {
+    currentStatusText() {
+        const label = "Status: "
         if (this.state.currentPos) {
-            return this.state.currentPos.alt + "m";
-        } else return "..."
+            return label + this.state.currentPos.status;
+        } else return label + "..."
     }
 
     lastUpdatedText() {
@@ -40,22 +43,22 @@ export class CurrentPosView {
                 text: "Current pos",
                 y: yPos
                 }),
-            yPos => createWidget(widget.TEXT, {
+            yPos => this.latTextWidget = createWidget(widget.TEXT, {
                 ...defaultOptions,
                 ...s.COMMON_TEXT_STYLE,
-                text: "Lon: " + this.currentLonText(),
-                y: yPos
-                }),
-            yPos => createWidget(widget.TEXT, {
-                ...defaultOptions,
-                ...s.COMMON_TEXT_STYLE,
-                text: "Lat: " + this.currentLatText(),
+                text: this.currentLatText(),
                 y: yPos
             }),
-            yPos => createWidget(widget.TEXT, {
+            yPos => this.lonTextWidget = createWidget(widget.TEXT, {
                 ...defaultOptions,
                 ...s.COMMON_TEXT_STYLE,
-                text: "Alt: " + this.currentAltText(),
+                text: this.currentLonText(),
+                y: yPos
+                }),
+            yPos => this.statusTextWidget = createWidget(widget.TEXT, {
+                ...defaultOptions,
+                ...s.COMMON_TEXT_STYLE,
+                text: this.currentStatusText(),
                 y: yPos
             }),
             yPos => this.lastUpdatedTextWidget = createWidget(widget.TEXT, {
@@ -69,8 +72,11 @@ export class CurrentPosView {
     }
 
     refresh() {
-        //s.logger.debug("State during refresh: " + JSON.stringify(this.state))
+//        s.logger.debug("State during refresh: " + JSON.stringify(this.state))
         this.lastUpdatedTextWidget.setProperty(prop.TEXT, this.lastUpdatedText());
+        this.statusTextWidget.setProperty(prop.TEXT, this.currentStatusText());
+        this.latTextWidget.setProperty(prop.TEXT, this.currentLatText());
+        this.lonTextWidget.setProperty(prop.TEXT, this.currentLonText());
    }
 
 }

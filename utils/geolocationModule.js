@@ -1,5 +1,12 @@
+import { Geolocation } from '@zos/sensor'
+import { log } from "@zos/utils";
+
+export const logger = log.getLogger("positioner");
+
 export class GeolocationModule {
     constructor() {}
+
+    geolocation = new Geolocation()
 
     listeners = Array()
 
@@ -7,22 +14,38 @@ export class GeolocationModule {
         lastUpdatedMs: Date.now()
     }
 
+    _transformSensorCoordinate(coordinate) {
+        if (typeof(coordinate) === "number") {
+            return coordinate.toFixed(6)
+        } else return coordinate
+    }
+
+    _geoCallbackFunction() {
+//        logger.debug("Geo callback function")
+        this.currentPosState.status = String(this.geolocation.getStatus())
+        if (this.currentPosState.status === "A")
+            this.currentPosState.lastUpdatedMs = Date.now()
+        this.currentPosState.lon = this._transformSensorCoordinate(this.geolocation.getLongitude())
+        this.currentPosState.lat = this._transformSensorCoordinate(this.geolocation.getLatitude())
+        this._notifyListeners()
+    }
+
+    _geoCallback = this._geoCallbackFunction.bind(this)
+
     _notifyListeners() {
         const notificationTime = Date.now()
         this.listeners.forEach((listener) => listener(this.currentPosState, notificationTime))
     }
 
     start() {
-        this.timerHandle = setInterval(() => {
-            if (Date.now() % 5000 < 2000)
-                this.currentPosState.lastUpdatedMs = Date.now()
-            this._notifyListeners()
-          }, 1000)
+        this.geolocation.onChange(this._geoCallback)  
+        this.geolocation.start()
     } 
 
     stop() {
-        if (this.timerHandle)
-            clearInterval(this.timerHandle)
+
+        this.geolocation.offChange(this._geoCallback)
+        this.geolocation.stop()        
 
     }
 }

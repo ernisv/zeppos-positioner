@@ -16,7 +16,7 @@ Page({
     s.logger.debug("page build invoked");
     setStatusBarVisible(false);
 
-    this.geoModule.listeners.push(this.geoListener.bind(this))
+    this.geoModule.listeners.push(this.geoListener.bind(this));
 
     setScrollMode({
       mode: SCROLL_MODE_SWIPER_HORIZONTAL,
@@ -33,7 +33,12 @@ Page({
     this.savedPosView.build({
       x: s.DEVICE_WIDTH,
       w: s.DEVICE_WIDTH
-    });    
+    });
+
+    this.refreshTimer = setInterval(() => {
+      this.currentPosView.refresh();
+      this.savedPosView.refresh();
+    }, 1000);
 
   },
 
@@ -58,6 +63,11 @@ Page({
     s.logger.debug("page onDestroy invoked");
     this.geoModule.stop();
     this.geoModule.listeners.length = 0;
+
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = undefined;
+    }
   }
 });
 
