@@ -28,14 +28,16 @@ export class SavedPosView {
     _savedLatText() {
         const label = "Lat: ";
         if (this.state.savedPos && this.state.savedPos.lat != undefined) {
-            return label + this.state.savedPos.lat;
+            const latStr = this.state.savedPos.lat.toFixed(6)
+            return label + latStr + "°";
         } else return label + "..."
     }
 
     _savedLonText() {
         const label = "Lon: ";
         if (this.state.savedPos && this.state.savedPos.lon != undefined) {
-            return label + this.state.savedPos.lon;
+            const lonStr = this.state.savedPos.lon.toFixed(6)
+            return label + lonStr + "°";
         } else return label + "..."
     }
 
@@ -44,7 +46,8 @@ export class SavedPosView {
         const curPos = { ...this.state.currentPos };
         const savedPos = { ...this.state.savedPos };
         if (curPos.lat !== undefined && savedPos.lat !== undefined) {
-            return label + this._calculateDistance(curPos, savedPos) + "m";
+            const distanceStr = Math.floor(this._calculateDistance(curPos, savedPos))
+            return label + distanceStr + "m";
         } else return label + "..."
     }    
 
@@ -53,7 +56,9 @@ export class SavedPosView {
         const curPos = { ...this.state.currentPos };
         const savedPos = { ...this.state.savedPos };
         if (curPos.lat !== undefined && savedPos.lat !== undefined) {
-            return label + this._calculateAzimuth(curPos, savedPos);
+            const azimuth = this._calculateAzimuth(curPos, savedPos)
+            const azimuthStr = Math.floor(azimuth)
+            return label + azimuthStr + "°";
         } else return label + "..."
     }
 

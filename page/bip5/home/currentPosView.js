@@ -8,22 +8,26 @@ export class CurrentPosView {
 
     currentLonText() {
         const label = "Lon: "
-        if (this.state.currentPos)
-            return label + this.state.currentPos.lon;
-        else return label + "..."
+        if (this.state.currentPos) {
+            const lonStr = this.state.currentPos.lon.toFixed(6)
+            return label + lonStr + "°";
+        } else return label + "..."
     }
 
     currentLatText() {
         const label = "Lat: "
-        if (this.state.currentPos)
-            return label + this.state.currentPos.lat;
-        else return label + "..."
+        if (this.state.currentPos) {
+            const latStr = this.state.currentPos.lat.toFixed(6)
+            return label + latStr + "°";
+        } else return label + "..."
     }
 
     currentStatusText() {
         const label = "Status: "
         if (this.state.currentPos) {
-            return label + this.state.currentPos.status;
+            const status = this.state.currentPos.status
+            const statusStr = status == "A" ? "A(active)" : status == "V" ? "V(stale)" : status
+            return label + statusStr;
         } else return label + "..."
     }
 

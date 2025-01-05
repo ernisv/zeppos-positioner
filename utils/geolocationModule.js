@@ -15,9 +15,7 @@ export class GeolocationModule {
     }
 
     _transformSensorCoordinate(coordinate) {
-        if (typeof(coordinate) === "number") {
-            return coordinate.toFixed(6)
-        } else return coordinate
+        return coordinate
     }
 
     _geoCallbackFunction() {
@@ -25,8 +23,8 @@ export class GeolocationModule {
         this.currentPosState.status = String(this.geolocation.getStatus())
         if (this.currentPosState.status === "A")
             this.currentPosState.lastUpdatedMs = Date.now()
-        this.currentPosState.lon = this._transformSensorCoordinate(this.geolocation.getLongitude())
-        this.currentPosState.lat = this._transformSensorCoordinate(this.geolocation.getLatitude())
+        this.currentPosState.lon = this._transformSensorCoordinate(this.geolocation.getLongitude("DD"))
+        this.currentPosState.lat = this._transformSensorCoordinate(this.geolocation.getLatitude("DD"))
         this._notifyListeners()
     }
 
